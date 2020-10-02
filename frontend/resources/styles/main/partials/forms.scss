@@ -61,7 +61,7 @@ textarea {
 
   .links {
     display: flex;
-    font-size: $fs11;
+    font-size: $fs14;
     justify-content: space-between;
     margin-bottom: $medium;
 
@@ -72,13 +72,13 @@ textarea {
   }
 
   .link-entry {
-    font-size: $fs12;
+    font-size: $fs14;
     color: $color-gray-40;
     margin-bottom: 10px;
   }
 
   .link-entry a {
-    font-size: $fs12;
+    font-size: $fs14;
     color: $color-primary-dark;
   }
 }
@@ -93,7 +93,7 @@ textarea {
     border-radius: 2px;
     border: 1px solid $color-gray-20;
     color: $color-gray-60;
-    font-size: $fs12;
+    font-size: $fs14;
     height: 40px;
     margin: 0;
     padding: 15px 15px 0 15px;
@@ -109,7 +109,7 @@ textarea {
   }
 
   label {
-    font-size: $fs10;
+    font-size: $fs12;
     color: $color-gray-30;
     position: absolute;
     left: 15px;
@@ -181,13 +181,13 @@ textarea {
 
   .hint {
     padding: 4px;
-    font-size: $fs10;
+    font-size: $fs12;
   }
 
   .error {
     color: $color-danger;
     padding: 4px;
-    font-size: $fs10;
+    font-size: $fs12;
   }
 }
 
@@ -198,7 +198,7 @@ textarea {
   justify-content: center;
 
   label {
-    font-size: $fs10;
+    font-size: $fs12;
     color: $color-gray-30;
   }
 
