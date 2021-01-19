@@ -196,6 +196,18 @@
   [ds table params]
   (jdbc-sql/insert! ds table params default-options))
 
+(defn- select-values [map ks]
+  (reduce #(conj %1 (map %2)) [] ks))
+
+(defn insert-multi!
+  [ds table param-list]
+  (doseq [params param-list]
+      (insert! ds table params))
+  ;; FIXME: Won't work
+  #_(let [keys (->> param-list first keys (into []))
+        params (->> param-list (mapv #(->> keys (select-values %) (into []))) )]
+    (jdbc-sql/insert-multi! ds table keys params default-options)))
+
 (defn update!
   [ds table params where]
   (let [opts (assoc default-options :return-keys true)]
