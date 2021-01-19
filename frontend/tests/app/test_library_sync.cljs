@@ -1,40 +1,33 @@
 (ns app.test-library-sync
   (:require [cljs.test :as t :include-macros true]
             [cljs.pprint :refer [pprint]]
-            [beicon.core :as rx]
-            [potok.core :as ptk]
+            [app.test-helpers :as th]
+            [app.common.uuid :as uuid]
+            [app.common.pages.helpers :as cph]
             [app.main.data.workspace.libraries :as dwl]))
 
-;; ---- Helpers
+(t/deftest test-create-page
+  (t/testing "create page"
+    (let [state (-> th/initial-state
+                    (th/sample-page))
+          page  (th/current-page state)]
+      (t/is (= (:name page) "page1")))))
 
-(defn do-update
-  [state event cb]
-  (let [new-state (ptk/update event state)]
-    (cb new-state)))
-
-(defn do-watch
-  [state event cb]
-  (->> (ptk/watch event state nil)
-       (rx/reduce conj [])
-       (rx/subs cb)))
-
-(defn do-watch-update
-  [state event & cbs]
-  (do-watch state event
-    (fn [events]
-      (t/is (= (count events) (count cbs)))
-      (reduce
-        (fn [new-state [event cb]]
-          (do-update new-state event cb))
-        state
-        (map list events cbs)))))
-
-;; ---- Tests
+(t/deftest test-create-shape
+  (t/testing "create shape"
+    (let [id    (uuid/next)
+          state (-> th/initial-state
+                    (th/sample-page)
+                    (th/sample-shape :rect {:id id
+                                         :name "Rect 1"}))
+          page  (th/current-page state)
+          shape (cph/get-shape page id)]
+      (t/is (= (:name shape) "Rect 1")))))
 
 (t/deftest synctest
   (t/testing "synctest"
     (let [state {:workspace-local {:color-for-rename "something"}}]
-      (do-update
+      (th/do-update
         state
         dwl/clear-color-for-rename
         (fn [new-state]
@@ -46,7 +39,7 @@
     (t/async done
       (let [state {}
             color {:color "#ffffff"}]
-        (do-watch-update
+        (th/do-watch-update
           state
           (dwl/add-recent-color color)
           (fn [new-state]
