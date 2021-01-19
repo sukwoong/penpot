@@ -2,9 +2,44 @@
   (:require [cljs.test :as t :include-macros true]
             [cljs.pprint :refer [pprint]]
             [app.test-helpers :as th]
+            [app.common.data :as d]
             [app.common.uuid :as uuid]
             [app.common.pages.helpers :as cph]
+            [app.main.data.workspace :as dw]
             [app.main.data.workspace.libraries :as dwl]))
+
+(t/deftest test-add-component
+  (t/testing "Add a component"
+    (t/async done
+      (let [id1   (uuid/next)
+            state (-> th/initial-state
+                      (th/sample-page)
+                      (th/sample-shape :rect {:id id1
+                                              :name "Rect 1"}))]
+        (th/do-update
+          state
+          (dw/select-shape id1)
+          (fn [new-state]
+            (th/do-watch-update
+              new-state
+              dwl/add-component
+
+              (fn [new-state]
+                (let [page  (th/current-page state)
+                      shape (cph/get-shape page id1)
+                      group (cph/get-shape page (:parent-id shape))]
+                  (pprint (:objects page))
+                  (t/is (= (:name shape) "Rect 1"))
+                  (t/is (= (:name group) "Root Frame"))
+                  ))
+
+                  ;; (println "uno")
+                  ;; (pprint new-state)))
+
+              (fn [new-state]
+                ;; (println "dos")
+                ;; (pprint new-state)
+                (done)))))))))
 
 (t/deftest test-create-page
   (t/testing "create page"

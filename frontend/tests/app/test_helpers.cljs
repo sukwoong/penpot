@@ -4,8 +4,11 @@
             [beicon.core :as rx]
             [potok.core :as ptk]
             [app.common.uuid :as uuid]
+            [app.common.geom.point :as gpt]
+            [app.common.geom.shapes :as gsh]
             [app.common.pages :as cp]
-            [app.common.pages.helpers :as cph]))
+            [app.common.pages.helpers :as cph]
+            [app.main.data.workspace :as dw]))
 
 
 ;; ---- Helpers to manage global events
@@ -35,12 +38,17 @@
 
 ;; ---- Helpers to manage pages and objects
 
+(def current-file-id (uuid/next))
+
 (def initial-state
-  {:current-page-id nil
+  {:current-file-id current-file-id
+   :current-page-id nil
+   :workspace-local dw/workspace-local-default
    :workspace-data {:id (uuid/next)
                     :components {}
                     :pages []
-                    :pages-index {}}})
+                    :pages-index {}}
+   :workspace-libraries {}})
 
 (defn current-page
   [state]
@@ -66,6 +74,7 @@
    (let [page  (current-page state)
          frame (cph/get-top-frame (:objects page))
          shape (-> (cp/make-minimal-shape type)
+                   (gsh/setup {:x 0 :y 0 :width 1 :height 1})
                    (merge props))]
      (update state :workspace-data
              cp/process-changes

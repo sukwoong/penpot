@@ -241,6 +241,7 @@
                          (= (:type (first shapes)) :group))
                   [(first shapes) [] []]
                   (dwg/prepare-create-group page-id shapes "Component-" true))
+                ;; _ (js/console.log "rchanges" (clj->js rchanges))
 
                 [new-shape new-shapes updated-shapes]
                 (dwlh/make-component-shape group objects file-id)
